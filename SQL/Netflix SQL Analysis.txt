@@ -1,0 +1,94 @@
+--Using Netflix we will clean, organize, and analyze data
+---Functions Used: Aggregate Functions, CAST, Update
+
+--Displaying all data
+SELECT *
+    FROM netflix
+
+--Checking the number of unique entries 
+SELECT COUNT(DISTINCT(show_id)) as num_shows
+    FROM netflix 
+--here we see that there is 8807 different types of movies and TV shows
+
+--Checking for Duplicate Entries
+SELECT show_id, COUNT (show_id) AS num_show_id
+    FROM netflix
+    GROUP BY show_id
+
+
+--Checking number of movies/TV shows per rating per rating
+SELECT show_id,rating, COUNT(show_id) AS num_show_id
+GROUP BY rating
+
+--Checking the length of movies 
+SELECT show_id,duration
+FROM netflix
+WHERE rating like '%min%'
+
+
+--It looks like duration was incorrectly placed we will place these values in the duration column
+UPDATE netflix
+SET duration=
+    CASE 
+        WHEN show_id='s5542' THEN '74 min'
+        WHEN show_id='s5795' THEN '84 min'
+        WHEN show_id='s5814' THEN '66 min'
+    END, 
+    rating= null
+WHERE show_id IN
+    (SELECT show_id
+FROM netflix
+WHERE rating like '%min%')
+
+--Double checking our update worked
+SELECT show_id,rating
+FROM netflix
+WHERE rating like '%min%'
+
+--Doouble checking Dates and lengths
+SELECT 
+    MAX(release_year), 
+    MIN(release_year)
+FROM netflix
+
+--1) What Is the average length of each movie and how this change throughout the years?
+
+--Find the average length of movies by year and the number of movies released
+Select release_year,AVG(duration)/60 as avg_duration_hr, count(show_id) as num_show_id
+FROM netflix
+WHERE type= 'Movie'
+GROUP BY release_year
+ORDER BY 3 DESC
+--here we see that most movies were released in 2018, and were on 1.6 hours long
+
+Select release_year,AVG(duration) as avg_duration_hr, count(show_id) as num_show_id
+FROM netflix
+WHERE type= 'TV Show'
+GROUP BY release_year
+ORDER BY 3 DESC
+--here we see that most TV shoes were released in 2020, and were more than a season long
+
+--What is the proportion of Movies from each rating?
+Select rating,COUNT(rating) as num_movies, 
+CAST(count(rating) as real)/(Select count(show_id) from netflix)*100 as Proportion
+FROM netflix
+WHERE rating is not null and type='Movie'
+GROUP BY rating
+HAVING Proportion >.10
+ORDER BY num_movies DESC
+
+Select rating,COUNT(rating) as num_shows, 
+CAST(count(rating) as real)/(Select count(show_id) from netflix)*100 as Proportion
+FROM netflix
+WHERE rating is not null and type='TV Show'
+GROUP BY rating
+HAVING Proportion >.10
+ORDER BY num_shows DESC
+
+
+--Examining Movies/TV shows that were released in the United States only
+WITH US_entertainment (SELECT show_id, type, date_added,release_year,rating,duration
+    FROM netflix 
+    WHERE country like '%United States%') 
+
+
