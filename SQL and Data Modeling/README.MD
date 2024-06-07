@@ -4,3 +4,11 @@ A business that controls or stores data is in dire need of a database management
 ![Alt Text](https://github.com/ornels/Portfolio/blob/main/SQL%20and%20Data%20Modeling/ERD_stock_exchange.png)
 ![Alt Text]
 https://github.com/ornels/Portfolio/blob/main/SQL%20and%20Data%20Modeling/ERD_stock_exchange_2.png
+
+<table>
+  <tr>
+    <td><img src="https://github.com/ornels/Portfolio/blob/main/SQL%20and%20Data%20Modeling/ERD_stock_exchange.png" alt="Image 1"></td>
+    <td><img src="https://github.com/ornels/Portfolio/blob/main/SQL%20and%20Data%20Modeling/ERD_stock_exchange_2.png" alt="Image 2"></td>
+  </tr>
+</table>
+
