@@ -1,1 +1,58 @@
 
+-- STORED PROCEDURE 
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Purchase`(userid int, Stock_ID int, Quantity int, Portfolio_ID int )
+BEGIN    
+-- Defining our variables 
+
+declare total, current_balance, price int;
+
+-- Transaction to verify enough funds before purchase, insert transactions row, and update portfolio   
+    start transaction; 
+		select current_price into price from stocks where ID=stock_id;
+		select quantity*price into total;
+		select accountbalance into current_balance from user where ID=userid;
+        IF (total<= current_balance)
+		THEN
+			insert into transactions(Date, type, Price, Quantity, StockID, PortfolioID)
+				values(now(), 'buy', price, Quantity,Stock_ID,Portfolio_ID );
+			update user set accountbalance=current_balance-total where ID=userid;
+            update portfolio set currentvalue=currentvalue+total where ID=Portfolio_ID;
+		elseif (total> current_balance)
+			THEN 
+            Select 'insufficient funds';
+		end if;
+	commit;
+END
+
+
+-- SELL PROCEDURE 
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Sell`(user_id int, Stock_ID int, quantity_to_sell int, Portfolio_ID int )
+BEGIN    
+
+-- Defining our variables 
+declare current_balance, num_stocks, price, total int;
+	select accountbalance into current_balance from User where ID=user_id;
+	Select num_of_stocks into num_stocks from stocks_portfolios where stockid=stock_id and PortfolioID=Portfolio_ID;
+	select current_price into price from stocks where id=stock_id;
+	select quantity_to_sell*price into total;
+
+start transaction; 
+-- Insert Transactions Row
+	insert into transactions(Date,type,StockID,Price,Quantity,PortfolioID)
+				values(now(), 'sell',Stock_ID, price, quantity_to_sell,Portfolio_ID );
+-- Update User's accountbalance
+	UPDATE User set accountbalance=current_balance+total where ID=user_id;
+	Update portfolio set currentvalue=currentvalue-total where ID=Portfolio_ID;
+
+-- Update Stocks_Portfolio, if we sell all then delete
+	IF num_stocks>quantity_to_sell
+	THEN 
+		update stocks_portfolios set num_of_stocks=num_of_stocks-quantity_to_sell where stockid=Stock_ID and portfolioid= Portfolio_ID;
+	elseif num_stocks=quantity_to_sell
+		THEN 
+           DELETE from stocks_portfolios where stockid=Stock_ID and portfolioid= Portfolio_ID;
+		end if;
+	commit;
+END
