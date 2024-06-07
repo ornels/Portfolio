@@ -1,0 +1,54 @@
+--UPDATE PORTFOLIO 
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `Stock_Market`.`update_port`
+AFTER INSERT ON `Stock_Market`.`Transactions`
+FOR EACH ROW
+BEGIN
+
+IF NEW.type='buy' THEN
+		IF NEW.stockid not in (select stockid from Stocks_Portfolios where portfolioID=NEW.portfolioID )
+		THEN 
+			INSERT INTO Stocks_Portfolios (portfolioID, stockid, Num_of_stocks)
+			values (NEW.portfolioID,NEW.stockid, NEW.quantity);
+		ELSE
+			UPDATE Stocks_Portfolios set Num_of_stocks=NEW.quantity+Num_of_stocks	
+			where portfolioID=NEW.portfolioID and stockID=NEW.stockid;
+		END IF;
+END IF;
+END
+
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `Stock_Market`.`update_port`
+AFTER INSERT ON `Stock_Market`.`Transactions`
+FOR EACH ROW
+BEGIN
+declare user int;	
+Select userid into user from portfolio where id=NEW.portfolioID;	
+IF NEW.stockid not in (select stockid from portfolio where userid=user)
+	THEN 
+	INSERT INTO portfolio (ID, stockid, quantity, userid)
+	values (NEW.stockid, NEW.quantity, user);
+ELSE	
+	UPDATE portfolio set quantity=NEW.quantity+OLD.quantity	
+	where id=NEW.portfolioID and stockID=NEW.stockid;
+END IF;
+
+END
+
+
+--CHANGE STOCK PRICE
+CREATE DEFINER = CURRENT_USER TRIGGER `Stock_Market`.`Price_log_after update` AFTER UPDATE ON `Stocks` FOR EACH ROW
+
+BEGIN
+declare old_price int;
+Select price into old_price from logs where stockid=NEW.ID order by date DESC limit 1;
+
+IF (NEW.current_price !=old_price)
+	THEN 
+    INSERT into logs (stockid, date, price)
+    Values(NEW.ID, now(), NEW.current_price);
+end if;
+
+END
