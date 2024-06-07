@@ -1,0 +1,14 @@
+-- Finding the most volatile stocks
+Select name, count(l.stockid) AS price_changes from stocks s 
+LEFT JOIN logs l on s.id=l.stockid
+group by l.stockid, name
+HAVING price_changes >3 
+order by price_changes DESC;
+
+-- Query to Get stock portfolio report 
+Select s.Industry, sum(sp.num_of_stocks) as TotalStocks from Stocks_Portfolios sp 
+JOIN portfolio p on sp.portfolioid=p.id join stocks s on sp.StockID=s.id
+group by Industry
+order by TotalStocks DESC
+
+
