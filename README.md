@@ -1,4 +1,3 @@
-# Complete list of projects 
 
 ## ML_Projects
 
@@ -25,3 +24,13 @@
 - Preprocessed survey data in Excel, handling missing values and discrepancies  
 - Implemented regression analysis in SPSS to uncover factor relationships with mental health
 - Provided technical consulting on leveraging data technologies for the client
+
+## Data Modeling Project 
+**Stock Market Exchange Database**
+- Project Overview: a comprehensive data model for a stock market exchange database, implement a relational database, and develop data management and analytical tools to support the exchange's operations. 
+- Objective: Provide a reliable and efficient data infrastructure to support the various functionalities of a stock market exchange, including stock management, company management, investor management, and transaction management.
+- Approach: Analyze the key entities, attributes, and relationships required for the stock market exchange database.
+      - Implement database triggers and stored procedures to automate key data management tasks, such as updating 
+      stock prices, calculating portfolio values, and generating trade settlement records.
+      - Develop trigger-based mechanisms to enforce data integrity constraints, ensure referential integrity, and 
+        maintain audit trails of critical transactions and changes.
