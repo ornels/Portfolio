@@ -8,7 +8,7 @@ Stocks (ID, Name, Ticker, Current_Price, Company, Industry)
 Transactions (ID, Type, Date, StockID(fk), Price, Quantity, PortfolioID(fk))
 Stocks_Portfolios (PortfolioID(fk), StockID(fk), Num_of_stocks)
 
-# ** ERD Diagram **
+## ERD Diagram 
 <table>
   <tr>
     <td><img src="https://github.com/ornels/Portfolio/blob/main/SQL%20and%20Data%20Modeling/ERD_stock_exchange.png" alt="Image 1"></td>
